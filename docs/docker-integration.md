@@ -4,7 +4,24 @@ This guide covers how to use the Docker integration system with Claude Code for 
 
 ## Overview
 
-The Docker integration provides seamless container management through natural language commands and a comprehensive API wrapper. It connects to your Docker server at `192.168.0.135:2375` and includes safety validations to prevent dangerous operations.
+The Docker integration provides container management through CLI tools and a comprehensive API wrapper. It connects to your Docker server at `192.168.0.135:2375` and includes safety validations to prevent dangerous operations.
+
+## Current Implementation Status
+
+✅ **Fully Implemented:**
+- Docker API wrapper (`DockerManager` class)
+- CLI tools (`docker_control.py`, `docker_dashboard.py`)
+- Safety validation hooks
+- Real-time monitoring dashboard
+- Comprehensive error handling
+
+⚠️ **Documentation Only (Not Yet Implemented):**
+- Natural language Claude Code commands (`/docker`, `/dev_environment`)
+- Automatic environment generation from descriptions
+- Intelligent project analysis and recommendations
+- One-command deployment workflows
+
+The current system provides a solid foundation for Docker operations through Python APIs and CLI tools. The natural language interface is planned for future development.
 
 ## Quick Start
 
@@ -24,49 +41,45 @@ The Docker integration provides seamless container management through natural la
 
 **List Containers:**
 ```bash
-# Via CLI
+# CLI interface (WORKING)
 python docker_control.py list           # Running containers
 python docker_control.py list --all     # All containers
 
-# Via Claude Code
-/docker list all containers
-/docker show container status
+# Claude Code commands (DOCUMENTATION ONLY - shows guidance, doesn't execute)
+/docker                                  # Shows Docker management help
+/dev_environment                         # Shows environment setup guidance
 ```
 
 **Container Management:**
 ```bash
-# Start/stop containers (via Python)
+# Direct Python API (WORKING)
 python -c "from docker_control import DockerManager; dm = DockerManager(); dm.start_container('container_name')"
 
-# Via Claude Code
-/docker start nginx container
-/docker stop database container
-/docker restart portainer
+# CLI interface (WORKING)
+python docker_control.py list
+python docker_control.py health
+python docker_control.py info
+
+# Real-time monitoring (WORKING)
+python docker_dashboard.py --refresh 5
 ```
 
 ## Command Reference
 
-### Claude Code Commands
+### Claude Code Commands (Currently Documentation Only)
 
-#### `/docker` - Container Management
-Interactive Docker management interface with the following capabilities:
+⚠️ **Important**: The `/docker` and `/dev_environment` commands currently show **guidance and documentation only**. They do not execute actual Docker operations. Use the CLI tools below for actual functionality.
 
-- **Container Operations**: List, start, stop, restart, remove containers
-- **Image Management**: Build images, pull from registries, list local images
-- **System Information**: Health checks, system statistics
-- **Safety Features**: Critical container protection, validation hooks
+#### `/docker` - Docker Management Guidance
+Shows comprehensive Docker management documentation including:
 
-**Usage Examples:**
-```bash
-/docker list all containers
-/docker stop the nginx container
-/docker build image from current directory
-/docker show logs for database container
-/docker check server health
-```
+- Container operation guidance and examples
+- Safety feature explanations
+- Available CLI tool usage
+- Best practices for container management
 
-#### `/dev_environment` - Environment Setup
-Automated development environment creation with pre-configured stacks:
+#### `/dev_environment` - Environment Setup Guidance  
+Shows development environment setup documentation including:
 
 **Supported Environments:**
 - **Node.js Full Stack**: React/Vue + Node.js + MongoDB/PostgreSQL + Redis + Nginx
@@ -75,13 +88,7 @@ Automated development environment creation with pre-configured stacks:
 - **Microservices**: API Gateway + Multiple Services + Service-specific DBs + Message Queue
 - **Data Science**: Jupyter + PostgreSQL + Redis + Grafana
 
-**Usage Examples:**
-```bash
-/dev_environment set up Node.js API with MongoDB and Redis
-/dev_environment create Python Flask app with PostgreSQL
-/dev_environment I need a React frontend with Python backend
-/dev_environment set up data science environment with Jupyter
-```
+**Current Status**: Documentation and guidance only. For actual environment setup, use the CLI tools and Docker API below.
 
 ### CLI Tools
 

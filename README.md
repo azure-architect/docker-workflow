@@ -13,6 +13,7 @@ A streamlined Claude Code integration template with advanced hooks for context e
 - **🔍 Quality Validation**: Enforce coding standards and best practices
 - **📋 Pipeline Workflow**: Structured development process with clear stages
 - **🔄 Context Resilience**: Built-in safeguards against context loss
+- **🐳 Docker Integration**: CLI tools and API wrapper for container management (CLI/API only)
 
 ## 🚀 Quick Start
 
