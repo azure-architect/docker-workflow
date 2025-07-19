@@ -2,65 +2,135 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Project Overview
+
+This is a Claude Code integration template that implements a structured development pipeline with advanced context engineering. The project provides a systematic approach to managing development tasks through distinct stages with comprehensive context preservation.
+
 ## Development Commands
 
-This is a Python-based AI automation project. Use these commands:
+### Core Workflow Commands
+```bash
+# Generate a Change Order from requirements
+/generate-co <requirements-file>
 
-### Code Quality
-- `black src/` - Format Python code
-- `isort src/` - Sort imports 
-- `mypy src/` - Type checking
-- `pylint src/` - Linting
-- `pytest` - Run tests
-- `python test:*` - Run specific test patterns
+# Execute an approved Change Order
+/execute-co <co-file>
 
-### Python Environment
-- `PYTHONPATH` is automatically set to include `src/` directory
-- Use `python scripts/monitor_csv_processing.py --monitor` for CSV monitoring tasks
+# Test implementation
+/test-co <co-file>
 
-### Docker Operations
-- `docker compose up` - Start services
-- `docker exec <container>` - Execute commands in containers
+# Document completed implementation
+/document-co <co-file>
 
-## Project Architecture
+# Restore context after context loss
+/restore-context
+```
 
-### Configuration Structure
-- `.claude/settings.json` - Main Claude Code configuration
-- `.claude/settings.local.json` - Local overrides and additional permissions
-- `.claude/hooks/` - Pre/post tool execution hooks with validation
-- `.claude/commands/` - Reusable command templates for documentation, implementation, and testing
+### Code Quality Commands
+```bash
+# Format Python code
+black .
+
+# Type checking
+mypy .
+
+# Linting
+pylint .
+
+# Import sorting
+isort .
+
+# Run tests
+pytest .
+```
+
+### Docker Commands
+```bash
+# Docker operations are permitted for development
+docker build -t <image-name> .
+docker run <container-options>
+```
+
+## Architecture
+
+### Pipeline Structure
+The project uses a 5-stage development pipeline:
+
+1. **1-planned/**: Generated Change Orders awaiting approval
+2. **2-in-progress/**: Approved Change Orders under implementation  
+3. **3-testing/**: Implementations undergoing testing
+4. **4-documented/**: Completed implementations with documentation
+5. **5-archived/**: Fully completed Change Orders
+
+### Change Order System
+- **Change Orders (COs)** are self-contained context capsules that preserve all necessary information for implementation
+- Each CO follows the template in `templates/co_template.md`
+- COs include project context, dependencies, decision history, and validation criteria
+- This system ensures context resilience against context window limitations
 
 ### Hook System
-The project uses a sophisticated hook system that validates code before writing:
+The project implements comprehensive hooks for quality control:
 
-#### Pre-Tool Validation (`.claude/hooks/pre_tool_use.py`)
-- Enforces 500-line maximum file length
-- Requires SSL imports for email clients
-- Blocks `os.system()` usage (requires subprocess instead)
-- Validates return type annotations on functions
-- File-type specific validations for .py, .sql, .md files
+- **PreToolUse**: Validates file content before changes (`.claude/hooks/pre_tool_use.py`)
+- **PostToolUse**: Formats code and performs checks after changes (`.claude/hooks/post_tool_use.py`)  
+- **Stop**: Captures session state and preserves transcripts (`.claude/hooks/stop.py`)
 
-#### Command Templates
-- `/document <component>` - Generate comprehensive documentation
-- `/implement <task>` - Create component implementations with proper architecture
-- `/test <component>` - Generate pytest test suites with 90%+ coverage
+## Context Engineering Principles
 
-### Development Patterns
-- Use dependency injection patterns
-- Implement proper error handling and logging
-- Follow PEP 8 conventions
-- Keep methods under 50 lines
-- Include comprehensive docstrings and type annotations
-- Use `docs/tasks/` directory for task specifications
+### Context as Infrastructure
+- Project context is treated as a foundational resource requiring deliberate engineering
+- Change Orders serve as context preservation vehicles
+- Pipeline structure maintains task state across sessions
 
-### Security Considerations
-- Email clients must use SSL connections
-- Avoid shell injection via `os.system()`
-- Use subprocess for system operations
-- Redis CLI access is permitted for data operations
+### Context Resilience Strategy
+- Use `/restore-context` to recover from context loss
+- Session transcripts are automatically preserved in `.claude/logs/`
+- Code artifacts are extracted and stored for reference
+- Pipeline state provides task tracking continuity
 
-## Additional Directories
-- `./docs/tasks/` - Task specification documents
+### Implementation Approach
+- Always start with comprehensive research and codebase analysis
+- Document decisions and alternatives in Change Orders
+- Follow existing patterns and conventions identified in the codebase
+- Include executable validation gates in all Change Orders
 
-## Documentation Reference
-- Local Claude Code documentation: `/Volumes/Samsung/mo/knowledge/docs/Claude Code`
+## File Structure Conventions
+
+```
+.claude/
+├── commands/           # Reusable command templates
+├── hooks/             # Quality control hooks  
+├── logs/              # Generated artifacts (gitignored)
+└── settings.json      # Configuration
+
+pipeline/              # Development pipeline stages
+├── 1-planned/
+├── 2-in-progress/
+├── 3-testing/
+├── 4-documented/
+└── 5-archived/
+
+templates/
+└── co_template.md     # Change Order template
+```
+
+## Quality Standards
+
+### Change Order Requirements
+- Must include comprehensive project context
+- Document all dependencies with versions
+- Provide executable validation gates
+- Reference existing codebase patterns
+- Include decision history and rationale
+
+### Code Standards
+- Follow existing project conventions
+- Include proper error handling
+- Maintain context preservation throughout implementation
+- Ensure one-pass implementation success through comprehensive planning
+
+## Environment Configuration
+
+- **PYTHONPATH**: Includes `./src` for Python imports
+- **Permissions**: Git, Docker, Python tools, and file operations are allowed
+- **Additional Directories**: `./docs/tasks/` is accessible for extended operations

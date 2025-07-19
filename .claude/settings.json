@@ -7,6 +7,8 @@
       "Bash(pylint *)",
       "Bash(isort *)",
       "Bash(docker *)",
+      "Bash(python docker_control.py *)",
+      "Bash(python docker_dashboard.py *)",
       "Bash(mkdir -p *)",
       "Bash(touch *)",
       "Bash(git *)"
@@ -16,7 +18,8 @@
     ]
   },
   "env": {
-    "PYTHONPATH": "${PYTHONPATH}:${PWD}/src"
+    "PYTHONPATH": "${PYTHONPATH}:${PWD}/src",
+    "DOCKER_HOST": "tcp://192.168.0.135:2375"
   },
   "hooks": {
     "PreToolUse": [
@@ -26,6 +29,16 @@
           {
             "type": "command",
             "command": "python .claude/hooks/pre_tool_use.py"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "filePattern": "docker*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python .claude/hooks/docker_pre_tool_use.py"
           }
         ]
       }
